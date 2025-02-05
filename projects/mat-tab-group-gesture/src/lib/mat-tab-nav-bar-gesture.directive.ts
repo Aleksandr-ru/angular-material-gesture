@@ -1,6 +1,6 @@
 
 import { Directive, Input, OnInit } from '@angular/core';
-import {MatTabGroup, MatTabNav} from '@angular/material/tabs';
+import { MatTabNav } from '@angular/material/tabs';
 import { fromEvent } from 'rxjs';
 import { pairwise, switchMap, takeUntil, tap } from 'rxjs/operators';
 
@@ -22,7 +22,7 @@ export class MatTabNavBarGestureDirective implements OnInit {
   private prevButton: any;
   private nextButton: any;
 
-  @Input() swipeLimitWidth = 80;
+  // @Input() swipeLimitWidth = 80;
   // @Input() connectEdges = true;
   // @Input() bodySwipe = true;
 
@@ -40,9 +40,9 @@ export class MatTabNavBarGestureDirective implements OnInit {
     this.headersList = this.tabGroup._tabList.nativeElement;
     if (!this.headersList) { throw new Error('No headers list found in DOM! Aborting...'); }
 
-    // todo: get body via this.tabGroup.tabPanel...
+    // todo: get body from this.tabGroup.tabPanel...
 
-    // we're unable to get it from this.tabGroup._nextPaginator
+    // unable to get it from this.tabGroup._nextPaginator and this.tabGroup._previousPaginator
     this.prevButton = this.headers.parentElement.querySelector('.mat-mdc-tab-header-pagination-before');
     this.nextButton = this.headers.parentElement.querySelector('.mat-mdc-tab-header-pagination-after');
 
@@ -80,9 +80,7 @@ export class MatTabNavBarGestureDirective implements OnInit {
         const rect = this.headers.getBoundingClientRect();
         // previous and current position with the offset
         const prevX = res[0].touches[0].clientX - rect.left;
-
         const currentX = res[1].touches[0].clientX - rect.left;
-
         this._scrollHeaders(currentX - prevX);
       });
   }
