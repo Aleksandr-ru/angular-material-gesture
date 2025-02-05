@@ -57,9 +57,9 @@ export class MatTabGroupGestureDirective implements OnInit {
         tap(() => {
           this.originalHeadersListTransition = this.headersList.style.transition;
           this.headersList.style.transition = 'none';
-          this.headersMaxScroll = -1 * (
+          this.headersMaxScroll =
             this.headersList.offsetWidth - this.headers.offsetWidth
-            + this.prevButton.offsetWidth + this.nextButton.offsetWidth);
+            + this.prevButton.offsetWidth + this.nextButton.offsetWidth;
         }),
         switchMap((e) => {
           // after a mouse down, we'll record all mouse moves
@@ -69,7 +69,6 @@ export class MatTabGroupGestureDirective implements OnInit {
               // this will trigger a 'mouseup' event
               takeUntil(fromEvent(this.headers, 'touchend').pipe(
                 tap(() => this.headersList.style.transition = this.originalHeadersListTransition),
-                tap(() => this.tabGroup._tabHeader.scrollDistance = this._getScrollDistance()),
               )),
               // pairwise lets us get the previous value to draw a line from
               // the previous point to the current point
@@ -84,31 +83,16 @@ export class MatTabGroupGestureDirective implements OnInit {
 
         const currentX = res[1].touches[0].clientX - rect.left;
 
-        this._scrollHeaders( currentX - prevX);
+        this._scrollHeaders(currentX - prevX);
       });
   }
 
   private _scrollHeaders(scrollX: number): void {
     if (!this.headersList || !this.headersMaxScroll) { return; }
-    const currentTransform = this.headersList.style.transform;
-    let currentScroll: number;
-    if (currentTransform && currentTransform.indexOf('translateX') > -1) {
-      let tmp = currentTransform.substring('translateX('.length);
-      tmp = tmp.substring(0, tmp.length - 'px)'.length);
-      currentScroll = parseInt(tmp, 10);
-    } else { currentScroll = 0; }
-    let newScroll = currentScroll + scrollX;
-    if (newScroll > 0) { newScroll = 0; }
-    if (newScroll < this.headersMaxScroll) { newScroll = this.headersMaxScroll; }
-    // this._renderer.setStyle(this._headersList, 'transform', `translateX(${newScroll}px)`);
-    this.headersList.style.transform = `translateX(${newScroll}px)`;
-  }
-
-  private _getScrollDistance(): number {
-    const style = window.getComputedStyle(this.headersList);
-    const matrix = new WebKitCSSMatrix(style.transform);
-    const translateX = matrix.m41;
-    return translateX * -1;
+    let newScroll = this.tabGroup._tabHeader.scrollDistance + scrollX * -1;
+    if (newScroll < 0) { newScroll = 0; }
+    if (newScroll > this.headersMaxScroll) { newScroll = this.headersMaxScroll; }
+    this.tabGroup._tabHeader.scrollDistance = newScroll;
   }
 
   private _handleBodyEvents(): void {
