@@ -43,6 +43,14 @@ After that, you will be able to add gesture directive to mat-tab-group :
 </mat-tab-group>
 ```
 
+Or mat-tab-nav-bar :
+
+```html
+<nav mat-tab-nav-bar matTabNavBarGesture>
+    ...
+</nav>
+```
+
 ## API Documentation
 
 #### MatTabGroupGesture
@@ -58,3 +66,7 @@ Selector: `matTabGroupGesture`
 | connectEdges   | true    | If true, the first tab and the last tab are connected (swiping for next tab on last tab will swipe to the first tab & vice-versa)
 | bodySwipe   | true    | If true, tabs content is also swipeable, otherwise only headers can be swiped
 
+#### MatTabNavBarGesture
+Directive responsible for managing gesture behaviors
+
+Selector: `matTabNavBarGesture`
